@@ -1,100 +1,86 @@
-# BugsTracker
+# How to Use BugsTracker Code
 
-**BugsTracker** is a comprehensive, modular project designed to automate and streamline issue tracking and notifications using Google Sheets and Google Apps Script. This repository houses multiple modules that help teams stay informed about bugs and issues while improving collaboration and response time.
+This guide explains how to set up and use the BugsTracker code in your Google Sheet. Follow these steps to get started:
 
-## Overview
+## 1. Set Up Your Google Sheet
 
-BugsTracker includes:
-
-- **Issue Tracker Email Notifier:**  
-  Automatically sends detailed email notifications based on issue data stored in a Google Sheet.
-
-- **Status Change Alerts:**  
-  Notifies designated recipients when an issue's status changes from "Not started" to one of the following: "In progress", "Blocked", "Done", "Ready For Testing", or "In Testing". The alert email contains issue details, the row number, and information about who updated the status.
-
-- **Custom Menu Integration:**  
-  Provides a custom menu in Google Sheets to manually trigger email notifications, set daily triggers, and manage other functionalities.
-
-- **Scalability & Flexibility:**  
-  Organized in a modular structure to allow adding more scripts or tools for different purposes within the same repository.
-
-## Features
-
-- **Automated Notifications:**  
-  Send emails automatically based on issue reports and status changes.
-
-- **Manual Trigger via Custom Menu:**  
-  Easily run functions from a custom menu within your Google Sheet.
-
-- **Daily Scheduling:**  
-  Option to set up daily triggers for notifications (e.g., "Send Emails (Today Only)").
-
-- **Modular Design:**  
-  Add and manage different code modules in one central repository.
-
-## Getting Started
-
-### Prerequisites
-
-- A Google account with access to Google Sheets and Google Apps Script.
-- Basic familiarity with Google Sheets.
-- (Optional) Some knowledge of JavaScript if you plan to customize the scripts.
-
-### Step-by-Step Setup
-
-1. **Prepare Your Google Sheet:**
-   - Create (or use an existing) Google Sheet.
+1. **Create or Open a Google Sheet**  
+   - Open a new or existing Google Sheet.
    - Rename one of the sheets to **"Ada Issue Tracker"**.
-   - Ensure the sheet has the following columns (with headers in row 1):
-     - **A:** Platform  
-     - **B:** Type  
-     - **C:** Priority  
-     - **D:** Module  
-     - **E:** Report Date  
-     - **F:** Issue Title  
-     - **G:** Description  
-     - **J:** Assignee  
-     - **K:** Status (e.g., "Not started", "In progress", etc.)
-     - **N:** Recipient Email (if needed)
-     - **O:** Marker column (to indicate that a status-change email has already been sent)
 
-2. **Add the Code to Google Apps Script:**
-   - Open your Google Sheet.
-   - Click on **Extensions > Apps Script**.
-   - Delete any existing code in the editor, then copy and paste the entire code files from this repository into the editor.
-   - Save your project (for example, name it `BugsTrackerScript`).
+2. **Configure the Columns**  
+   Ensure your sheet has at least the following columns (with headers in row 1):
+   - **A:** Platform
+   - **B:** Type
+   - **C:** Priority
+   - **D:** Module
+   - **E:** Report Date
+   - **F:** Issue Title
+   - **G:** Description
+   - **J:** Assignee (Name)
+   - **K:** Status  
+     (e.g., "Not started", "In progress", "Blocked", "Done", "Ready For Testing", "In Testing")
+   - **N:** Recipient Email (if applicable)
+   - **O:** Marker (for status change email notifications; leave blank initially)
 
-3. **Set Up the Custom Menu:**
-   - The script includes an `onOpen()` function that creates a custom menu called **"Custom Scripts"**.
-   - Refresh your Google Sheet to load the new menu.
+## 2. Add the Code to Your Google Apps Script Project
 
-4. **Manually Trigger Functions:**
-   - Use the **"Custom Scripts"** menu in your Google Sheet to run the following functions:
-     - **Send Issue Emails:**  
-       Sends emails for issues with status "Not started" (up to 50 rows).
-     - **Send Emails (Today Only):**  
-       Sends emails for issues where the report date equals today's date and the status is "Not started".
-     - **Send Status Change Emails:**  
-       Scans all rows for status changes (from "Not started" to allowed statuses) and sends alert emails. (Uses a marker in column O so that emails are not sent more than once for the same row.)
-     - **Set Daily Trigger:**  
-       Creates a daily trigger to run the "Send Emails (Today Only)" function at 8 AM.
-     - **Delete All Triggers:**  
-       Removes all scheduled triggers.
+1. **Open Apps Script Editor**  
+   - In your Google Sheet, click on **Extensions > Apps Script**.
+2. **Create the Script Files**  
+   - Delete any existing code in the editor.
+   - Create new files with the following names and copy the corresponding code:
+     - `SendEmail.gs` – Contains functions for sending issue emails and today's emails.
+     - `CustomMenu.gs` – Contains the code for creating a custom menu.
+     - `Triggers.gs` – Contains functions for setting and deleting triggers, as well as sending status change emails.
+3. **Add the Manifest File (Optional)**  
+   - Create a file named `appsscript.json` with the appropriate configuration (see repository documentation).
 
-5. **Customize as Needed:**
-   - Update email addresses or the sheet link in the code.
-   - Adjust column indices if your sheet structure differs.
-   - Modify message content and subject lines according to your needs.
+## 3. Set Up the Custom Menu
 
-## Contributing
+- The `CustomMenu.gs` file includes an `onOpen()` function that creates a custom menu called **"Custom Scripts"**.
+- **Reload your Google Sheet** to see the new menu in the toolbar.
 
-Contributions are welcome! If you have ideas for improvements or new features, feel free to fork this repository and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
+## 4. How to Use the Custom Menu Options
 
-## License
+When you open your Google Sheet, click on the **"Custom Scripts"** menu. You will see several options:
 
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+- **Send Issue Emails**  
+  - Sends email notifications for issues where the status is **"Not started"** (up to 50 rows).
+- **Send Emails (Today Only)**  
+  - Sends emails only for rows where the report date (column E) is today's date and status is **"Not started"**.
+- **Send Status Change Emails**  
+  - Scans all rows and sends email notifications when an issue’s status has changed from **"Not started"** to one of the allowed statuses (e.g., "In progress", "Blocked", etc.).
+  - This function uses the Marker in column O to ensure the email for a row is only sent once.
+- **Set Daily Trigger**  
+  - Creates a daily trigger that will automatically run the **Send Emails (Today Only)** function at 8 AM.
+- **Delete All Triggers**  
+  - Removes all triggers that have been created by this project.
 
-## Contact
+## 5. Testing the Functions
 
-For questions or support, please open an issue in this repository or contact the project maintainer.
+1. **Test Manually:**  
+   - Change data in your sheet (for example, update the status in column K).
+   - Then, select the corresponding option from the **Custom Scripts** menu.
+2. **Check Logs and Alerts:**  
+   - If something goes wrong or you need to see details, open the Apps Script Editor and click on **View > Logs** to review messages.
 
+## 6. Customizing the Code
+
+- **Email Addresses:**  
+  - Modify the email addresses in the code if you want notifications sent to different recipients.
+- **Sheet Link:**  
+  - Update the Google Sheet link in the code if your sheet’s URL is different.
+- **Column Indices:**  
+  - Adjust the column ranges if your sheet’s structure is different from what is described in this guide.
+- **Message Content:**  
+  - Customize subject lines and email message contents according to your needs.
+
+## 7. Additional Information
+
+- **No Automatic Triggers:**  
+  - This project is designed to be run manually through the custom menu. If you wish to use automatic triggers, refer to the `createDailyTrigger` function.
+- **Further Documentation:**  
+  - For more information on Google Apps Script, visit the [Google Apps Script Documentation](https://developers.google.com/apps-script).
+
+Enjoy using BugsTracker to streamline your issue tracking and email notifications!
