@@ -1,16 +1,18 @@
 // SendEmail.gs
 
-// Fungsi untuk mengirim email issue (misalnya, untuk baris dengan status "Not started")
+// Function to send issue emails (for rows with status "Not started")
 function sendIssueEmails() {
-  const sheetName = "Ada Issue Tracker";
-  const senderEmail = "nurekokustiarno@ruangguru.com";
+  // Replace these placeholders with your actual values.
+  const sheetName = "YOUR_SHEET_NAME"; // e.g., "Ada Issue Tracker"
+  const senderEmail = "YOUR_SENDER_EMAIL"; // e.g., "your.email@example.com"
+  const sheetLink = "YOUR_GOOGLE_SHEET_LINK"; // e.g., "https://docs.google.com/spreadsheets/d/your-sheet-id/edit#gid=0"
+  
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const maxRows = 50;
-  const sheetLink = "https://docs.google.com/spreadsheets/d/1buFpudDSIaypL0n3u1Imt7YVhnz46D5I3Ka-hDLwF6w/edit#gid=1474248390";
   
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
   if (!sheet) {
-    SpreadsheetApp.getUi().alert(`Sheet "${sheetName}" tidak ditemukan!`);
+    SpreadsheetApp.getUi().alert(`Sheet "${sheetName}" not found!`);
     return;
   }
   
@@ -18,7 +20,9 @@ function sendIssueEmails() {
   let emailsSent = 0, missingEmails = 0, invalidEmails = 0, skippedRows = 0;
   
   data.forEach(row => {
+    // Destructure row values (columns A, B, C, D, E, F, G, <unused>, <unused>, J, K, <unused>, <unused>, N)
     const [platform, type, priority, module, reportDate, issueTitle, description, , , assignee, status, , , email] = row;
+    
     if (status !== "Not started") {
       skippedRows++;
       return;
@@ -56,7 +60,7 @@ Thank you for your prompt attention to this matter.
 
 Best regards,
 `;
-
+    
     try {
       GmailApp.sendEmail(assigneeEmail, subject, message, { from: senderEmail });
       emailsSent++;
@@ -73,19 +77,20 @@ Best regards,
   `);
 }
 
-// Fungsi untuk mengirim email hanya untuk baris yang report date-nya adalah hari ini.
+// Function to send emails only for rows with today's report date.
 function sendTodayEmails() {
-  const sheetName = "Ada Issue Tracker";
-  const senderEmail = "nurekokustiarno@ruangguru.com";
+  // Replace these placeholders with your actual values.
+  const sheetName = "YOUR_SHEET_NAME"; // e.g., "Ada Issue Tracker"
+  const senderEmail = "YOUR_SENDER_EMAIL"; // e.g., "your.email@example.com"
+  const sheetLink = "YOUR_GOOGLE_SHEET_LINK"; // e.g., "https://docs.google.com/spreadsheets/d/your-sheet-id/edit#gid=0"
+  
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const timeZone = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone();
-  const sheetLink = "https://docs.google.com/spreadsheets/d/1buFpudDSIaypL0n3u1Imt7YVhnz46D5I3Ka-hDLwF6w/edit#gid=1474248390";
-  
   const today = Utilities.formatDate(new Date(), timeZone, "MM/dd/yyyy");
   
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
   if (!sheet) {
-    SpreadsheetApp.getUi().alert(`Sheet "${sheetName}" tidak ditemukan!`);
+    SpreadsheetApp.getUi().alert(`Sheet "${sheetName}" not found!`);
     return;
   }
   
@@ -93,7 +98,9 @@ function sendTodayEmails() {
   let emailsSent = 0;
   
   data.forEach(row => {
+    // Destructure row values (columns A, B, C, D, E, F, G, <unused>, <unused>, J, K, <unused>, <unused>, N)
     const [platform, type, priority, module, reportDateCell, issueTitle, description, , , assignee, status, , , email] = row;
+    
     if (status !== "Not started" || !reportDateCell) return;
     
     const reportDate = Utilities.formatDate(new Date(reportDateCell), timeZone, "MM/dd/yyyy");
@@ -128,7 +135,7 @@ Thank you for your prompt attention to this matter.
 
 Best regards,
 `;
-
+    
     try {
       GmailApp.sendEmail(assigneeEmail, subject, message, { from: senderEmail });
       Logger.log(`Email sent to: ${assigneeEmail}`);
